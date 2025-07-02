@@ -16,6 +16,6 @@ module.exports = (sequelize) =>
       allowNull: false
     }
   }, {
-    tableName: 'Submissions', // Ensures consistent table name
-    timestamps: true          // Adds createdAt and updatedAt
+    tableName: 'Submissions', 
+    timestamps: true          
   });

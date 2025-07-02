@@ -7,7 +7,18 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Form Management</h1>
+     <h1 style={{
+  textAlign: 'center',
+  marginTop: '30px',
+  fontSize: '2rem',
+  color: '#333',
+  borderBottom: '2px solid #4CAF50',
+  paddingBottom: '10px',
+  maxWidth: '600px',
+  margin: '30px auto'
+}}>
+  Form Management
+</h1>
       <SubmissionForm submission={editingSubmission} onReset={() => setEditingSubmission(null)} />
       <SubmissionsTable onEdit={setEditingSubmission} />
     </div>
