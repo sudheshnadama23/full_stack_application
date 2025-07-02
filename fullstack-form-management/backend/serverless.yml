@@ -1,0 +1,33 @@
+service: form-backend
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-2
+  environment:
+    DB_NAME: postgres
+    DB_USER: postgres
+    DB_PASS: Madhu1988
+    DB_HOST: database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com
+    DB_PORT: 5432
+  vpc:
+    securityGroupIds:
+      - sg-083d8a8a9aeb2ff51   # your RDS security group
+    subnetIds:
+      - subnet-08e35c09cd670de4d
+      - subnet-0908e986cd111ec88
+      - subnet-087aee35176f43064
+
+functions:
+  app:
+    handler: server.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+      - http:
+          path: /{proxy+}
+          method: ANY
+
+plugins:
+  - serverless-offline  # Optional: allows local testing

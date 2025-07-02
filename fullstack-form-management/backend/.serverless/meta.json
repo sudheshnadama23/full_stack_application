@@ -1,0 +1,1245 @@
+{
+  "/Users/sudheshnadama/Downloads/fullstack-form-management/backend/serverless.yml": {
+    "versionFramework": "4.17.1",
+    "servicePath": "/Users/sudheshnadama/Downloads/fullstack-form-management/backend/serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "form-backend",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs20.x",
+        "region": "us-east-2",
+        "environment": {
+          "DB_NAME": "postgres",
+          "DB_USER": "postgres",
+          "DB_PASS": "Madhu1988",
+          "DB_HOST": "database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com",
+          "DB_PORT": "5432"
+        },
+        "vpc": {
+          "securityGroupIds": [
+            "sg-083d8a8a9aeb2ff51"
+          ],
+          "subnetIds": [
+            "subnet-08e35c09cd670de4d",
+            "subnet-0908e986cd111ec88",
+            "subnet-087aee35176f43064"
+          ]
+        },
+        "stage": "dev",
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "AppLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/form-backend-dev-app"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "form-backend",
+                          "dev",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/form-backend-dev*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/form-backend-dev*:*:*"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "form-backend",
+                      "dev",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                },
+                "ManagedPolicyArns": [
+                  {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            },
+            "AppLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+                  "S3Key": "serverless/form-backend/dev/1751420809944-2025-07-02T01:46:49.944Z/form-backend.zip"
+                },
+                "Handler": "server.handler",
+                "Runtime": "nodejs20.x",
+                "FunctionName": "form-backend-dev-app",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "DB_NAME": "postgres",
+                    "DB_USER": "postgres",
+                    "DB_PASS": "Madhu1988",
+                    "DB_HOST": "database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com",
+                    "DB_PORT": "5432"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                },
+                "VpcConfig": {
+                  "SecurityGroupIds": [
+                    "sg-083d8a8a9aeb2ff51"
+                  ],
+                  "SubnetIds": [
+                    "subnet-08e35c09cd670de4d",
+                    "subnet-0908e986cd111ec88",
+                    "subnet-087aee35176f43064"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "AppLogGroup"
+              ]
+            },
+            "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "AppLambdaFunction"
+                },
+                "CodeSha256": "7IYNfYHudN0j2iOzaOHpAbbxVw89PYjr1YQRsv29hJ0="
+              }
+            },
+            "ApiGatewayRestApi": {
+              "Type": "AWS::ApiGateway::RestApi",
+              "Properties": {
+                "Name": "dev-form-backend",
+                "EndpointConfiguration": {
+                  "Types": [
+                    "EDGE"
+                  ]
+                },
+                "Policy": ""
+              }
+            },
+            "ApiGatewayResourceProxyVar": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Fn::GetAtt": [
+                    "ApiGatewayRestApi",
+                    "RootResourceId"
+                  ]
+                },
+                "PathPart": "{proxy+}",
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                }
+              }
+            },
+            "ApiGatewayMethodAny": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "ANY",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Fn::GetAtt": [
+                    "ApiGatewayRestApi",
+                    "RootResourceId"
+                  ]
+                },
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "AppLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "AppLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodProxyVarAny": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "ANY",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceProxyVar"
+                },
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "AppLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "AppLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayDeployment1751420796830": {
+              "Type": "AWS::ApiGateway::Deployment",
+              "Properties": {
+                "RestApiId": {
+                  "Ref": "ApiGatewayRestApi"
+                },
+                "StageName": "dev"
+              },
+              "DependsOn": [
+                "ApiGatewayMethodAny",
+                "ApiGatewayMethodProxyVarAny"
+              ]
+            },
+            "AppLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "AppLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "ApiGatewayRestApi"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+              "Export": {
+                "Name": "sls-form-backend-dev-ServerlessDeploymentBucketName"
+              }
+            },
+            "AppLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4"
+              },
+              "Export": {
+                "Name": "sls-form-backend-dev-AppLambdaFunctionQualifiedArn"
+              }
+            },
+            "ServiceEndpoint": {
+              "Description": "URL of the service endpoint",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    },
+                    "/dev"
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-form-backend-dev-ServiceEndpoint"
+              }
+            }
+          }
+        }
+      },
+      "functions": {
+        "app": {
+          "handler": "server.handler",
+          "events": [
+            {
+              "http": {
+                "path": "",
+                "method": "any",
+                "integration": "AWS_PROXY"
+              }
+            },
+            {
+              "http": {
+                "path": "{proxy+}",
+                "method": "any",
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "name": "form-backend-dev-app",
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs20.x",
+          "vpc": {},
+          "versionLogicalId": "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4"
+        }
+      },
+      "plugins": [
+        "serverless-offline"
+      ]
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs20.x",
+      "region": "us-east-2",
+      "environment": {
+        "DB_NAME": "postgres",
+        "DB_USER": "postgres",
+        "DB_PASS": "Madhu1988",
+        "DB_HOST": "database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com",
+        "DB_PORT": "5432"
+      },
+      "vpc": {
+        "securityGroupIds": [
+          "sg-083d8a8a9aeb2ff51"
+        ],
+        "subnetIds": [
+          "subnet-08e35c09cd670de4d",
+          "subnet-0908e986cd111ec88",
+          "subnet-087aee35176f43064"
+        ]
+      },
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "AppLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/form-backend-dev-app"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "form-backend",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/form-backend-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/form-backend-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "form-backend",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              },
+              "ManagedPolicyArns": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          "AppLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+                "S3Key": "serverless/form-backend/dev/1751420809944-2025-07-02T01:46:49.944Z/form-backend.zip"
+              },
+              "Handler": "server.handler",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "form-backend-dev-app",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_NAME": "postgres",
+                  "DB_USER": "postgres",
+                  "DB_PASS": "Madhu1988",
+                  "DB_HOST": "database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com",
+                  "DB_PORT": "5432"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "VpcConfig": {
+                "SecurityGroupIds": [
+                  "sg-083d8a8a9aeb2ff51"
+                ],
+                "SubnetIds": [
+                  "subnet-08e35c09cd670de4d",
+                  "subnet-0908e986cd111ec88",
+                  "subnet-087aee35176f43064"
+                ]
+              }
+            },
+            "DependsOn": [
+              "AppLogGroup"
+            ]
+          },
+          "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AppLambdaFunction"
+              },
+              "CodeSha256": "7IYNfYHudN0j2iOzaOHpAbbxVw89PYjr1YQRsv29hJ0="
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-form-backend",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              },
+              "Policy": ""
+            }
+          },
+          "ApiGatewayResourceProxyVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "{proxy+}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodAny": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "ANY",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "AppLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "AppLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodProxyVarAny": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "ANY",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProxyVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "AppLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "AppLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1751420796830": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodAny",
+              "ApiGatewayMethodProxyVarAny"
+            ]
+          },
+          "AppLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AppLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+            "Export": {
+              "Name": "sls-form-backend-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "AppLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4"
+            },
+            "Export": {
+              "Name": "sls-form-backend-dev-AppLambdaFunctionQualifiedArn"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-form-backend-dev-ServiceEndpoint"
+            }
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "service: form-backend\n\nprovider:\n  name: aws\n  runtime: nodejs20.x\n  region: us-east-2\n  environment:\n    DB_NAME: postgres\n    DB_USER: postgres\n    DB_PASS: Madhu1988\n    DB_HOST: database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com\n    DB_PORT: 5432\n  vpc:\n    securityGroupIds:\n      - sg-083d8a8a9aeb2ff51   # your RDS security group\n    subnetIds:\n      - subnet-08e35c09cd670de4d\n      - subnet-0908e986cd111ec88\n      - subnet-087aee35176f43064\n\nfunctions:\n  app:\n    handler: server.handler\n    events:\n      - http:\n          path: /\n          method: ANY\n      - http:\n          path: /{proxy+}\n          method: ANY\n\nplugins:\n  - serverless-offline  # Optional: allows local testing",
+    "command": [
+      "deploy"
+    ],
+    "options": {},
+    "orgId": "06c56cb2-d9df-4f17-93c5-bf8770c4b388",
+    "orgName": "sudheshnadama",
+    "userId": "LY68GnhdF9JGjQ7Clv",
+    "userName": "sudheshnadama",
+    "serviceProviderAwsAccountId": "125677696447",
+    "serviceProviderAwsCfStackName": "form-backend-dev",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-2:125677696447:stack/form-backend-dev/54546c40-56df-11f0-a89b-065360ff26e9",
+    "serviceProviderAwsCfStackCreated": "2025-07-02T00:56:04.249Z",
+    "serviceProviderAwsCfStackUpdated": "2025-07-02T01:32:09.944Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "AppLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-2:125677696447:function:form-backend-dev-app:4",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-form-backend-dev-AppLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServiceEndpoint",
+        "OutputValue": "https://k7b007rjqg.execute-api.us-east-2.amazonaws.com/dev",
+        "Description": "URL of the service endpoint",
+        "ExportName": "sls-form-backend-dev-ServiceEndpoint"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+        "ExportName": "sls-form-backend-dev-ServerlessDeploymentBucketName"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "AppLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/form-backend-dev-app"
+          }
+        },
+        "IamRoleLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "form-backend",
+                      "dev",
+                      "lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/form-backend-dev*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/form-backend-dev*:*:*"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "form-backend",
+                  "dev",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "lambdaRole"
+                ]
+              ]
+            },
+            "ManagedPolicyArns": [
+              {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+                  ]
+                ]
+              }
+            ]
+          }
+        },
+        "AppLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+              "S3Key": "serverless/form-backend/dev/1751420809944-2025-07-02T01:46:49.944Z/form-backend.zip"
+            },
+            "Handler": "server.handler",
+            "Runtime": "nodejs20.x",
+            "FunctionName": "form-backend-dev-app",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "DB_NAME": "postgres",
+                "DB_USER": "postgres",
+                "DB_PASS": "Madhu1988",
+                "DB_HOST": "database-1.chi08ga6ae28.us-east-2.rds.amazonaws.com",
+                "DB_PORT": "5432"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            },
+            "VpcConfig": {
+              "SecurityGroupIds": [
+                "sg-083d8a8a9aeb2ff51"
+              ],
+              "SubnetIds": [
+                "subnet-08e35c09cd670de4d",
+                "subnet-0908e986cd111ec88",
+                "subnet-087aee35176f43064"
+              ]
+            }
+          },
+          "DependsOn": [
+            "AppLogGroup"
+          ]
+        },
+        "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "AppLambdaFunction"
+            },
+            "CodeSha256": "7IYNfYHudN0j2iOzaOHpAbbxVw89PYjr1YQRsv29hJ0="
+          }
+        },
+        "ApiGatewayRestApi": {
+          "Type": "AWS::ApiGateway::RestApi",
+          "Properties": {
+            "Name": "dev-form-backend",
+            "EndpointConfiguration": {
+              "Types": [
+                "EDGE"
+              ]
+            },
+            "Policy": ""
+          }
+        },
+        "ApiGatewayResourceProxyVar": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Fn::GetAtt": [
+                "ApiGatewayRestApi",
+                "RootResourceId"
+              ]
+            },
+            "PathPart": "{proxy+}",
+            "RestApiId": {
+              "Ref": "ApiGatewayRestApi"
+            }
+          }
+        },
+        "ApiGatewayMethodAny": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "ANY",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Fn::GetAtt": [
+                "ApiGatewayRestApi",
+                "RootResourceId"
+              ]
+            },
+            "RestApiId": {
+              "Ref": "ApiGatewayRestApi"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "AppLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "AppLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodProxyVarAny": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "ANY",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceProxyVar"
+            },
+            "RestApiId": {
+              "Ref": "ApiGatewayRestApi"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "AppLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "AppLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayDeployment1751420796830": {
+          "Type": "AWS::ApiGateway::Deployment",
+          "Properties": {
+            "RestApiId": {
+              "Ref": "ApiGatewayRestApi"
+            },
+            "StageName": "dev"
+          },
+          "DependsOn": [
+            "ApiGatewayMethodAny",
+            "ApiGatewayMethodProxyVarAny"
+          ]
+        },
+        "AppLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "AppLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-us-east-2-ebfac4a4-f12d",
+          "Export": {
+            "Name": "sls-form-backend-dev-ServerlessDeploymentBucketName"
+          }
+        },
+        "AppLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "AppLambdaVersionnYiL3Nyj3ynmyD3UKcwsgWztiHe3sIRwQkTWz7q4"
+          },
+          "Export": {
+            "Name": "sls-form-backend-dev-AppLambdaFunctionQualifiedArn"
+          }
+        },
+        "ServiceEndpoint": {
+          "Description": "URL of the service endpoint",
+          "Value": {
+            "Fn::Join": [
+              "",
+              [
+                "https://",
+                {
+                  "Ref": "ApiGatewayRestApi"
+                },
+                ".execute-api.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix"
+                },
+                "/dev"
+              ]
+            ]
+          },
+          "Export": {
+            "Name": "sls-form-backend-dev-ServiceEndpoint"
+          }
+        }
+      }
+    }
+  }
+}
